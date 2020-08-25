@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-framework="knockback">
+
+<head>
+    <meta charset="utf-8">
+    <title>Demo Knockback</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Modal Confirm
+                </div>
+                <div class="modal-body">
+                    <div class="content"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a href="#" id="delete" class="btn btn-success success">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" kb-inject="AppViewModel">
+
+        <div class="page-header">
+            <h1>MY PERSONS</h1>
+        </div>
+        <div id="message"></div>
+        <div class="panel panel-default">
+            <div class="panel-body" id="primary-content">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Active</th>
+                            <th width="140">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: persons">
+                        <tr>
+                            <td data-bind="text: id"></td>
+                            <td data-bind="text: name"></td>
+                            <td data-bind="text: address"></td>
+                            <td data-bind="text: email"></td>
+                            <td data-bind="text: phone"></td>
+                            <td data-bind="text: active() == 0 ? 'Disable' : 'Actice'"></td>
+                            <td>
+                                <button data-bind="click: $parent.editPerson">Edit</button>
+                                <button data-bind="click: $parent.removePerson">Remove</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ul>
+                    <li>
+                        <a href="#/" data-bind="css: {selected: $root.filterMode()==''}">All</a>
+                    </li>
+                    <li>
+                        <a href="#/active" data-bind="css: {selected: $root.filterMode()=='active'}">Active</a>
+                    </li>
+                    <li>
+                        <a href="#/disable" data-bind="css: {selected: $root.filterMode()=='disable'}">Disable</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <button style="margin:10px 0;" class="btn btn-warning" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-desktop"></i> Show Output JSON</button>
+        <div class="collapse" id="collapseExample">
+            <code id="output" style="display:block;white-space:pre-wrap;"></code>
+        </div>
+    </div>
+
+    <!-- App Dependencies -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/backbone/backbone.js"></script>
+    <script src="bower_components/knockout/build/knockout-raw.js"></script>
+    <script src="bower_components/knockback/knockback.js"></script>
+
+    <!-- App and Components -->
+    <script src="js/models/person.js"></script>
+    <script src="js/collections/persons.js"></script>
+    <script src="js/viewmodels/person.js"></script>
+    <script src="js/viewmodels/app.js"></script>
+</body>
+
+</html>
