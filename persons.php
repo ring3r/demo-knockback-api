@@ -12,7 +12,7 @@
 	if ($_SERVER['REQUEST_METHOD'] == "POST"){
 		$sql = "INSERT INTO persons (id,name,email,phone,address,active) values (:id,:name,:email,:phone,:address,:active)";
 		$query = $db->prepare($sql);
-		$query->execute(array(":id"=>$data->id,":name"=>$data->name,":email"=>$data->email,":phone"=>$data->phone,":address"=>$data->address,":active"=>$data->active));
+		$query->execute(array(":name"=>$data->name,":email"=>$data->email,":phone"=>$data->phone,":address"=>$data->address,":active"=>$data->active));
 		$result['id'] = $db->lastInsertId();
 		echo json_encode($result);
 	}

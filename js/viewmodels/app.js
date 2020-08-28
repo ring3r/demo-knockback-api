@@ -1,38 +1,39 @@
 var app = app || {};
 
-(function() {
-    'use strict';
+var AppViewModel = function(view_model, element) {
+    // var knockback_model = { id: '0', name: 'name1', address: 'address1', email: 'email1', phone: 'phone1', active: '1' };
+    var persons = new app.Persons();
+    // var persons = new app.Persons();
+    persons.fetch();
 
-    // The application View Model is created and bound from the HTML using kb-inject.
-    window.AppViewModel = kb.ViewModel.extend({
-        constructor: function() {
-            var self = this;
-            kb.ViewModel.prototype.constructor.call(this);
+    var active_el = null;
+    var loadPage = function(el) {
+        if (active_el) ko.removeNode(active_el);
+        return element.appendChild(active_el = el);
+    };
 
-            // The function used for filtering is dynamically selected based on the filterMode.
-            this.filterMode = ko.observable('');
-            console.log('filterMode1', this.filterMode);
-            var filterFn = ko.computed(function() {
-                console.log('filterMode2', self.filterMode());
-                switch (self.filterMode()) {
-                    case 'active':
-                        return (function(model) { return model.active.get(1); });
-                    case 'disable':
-                        return (function(model) { return model.active.get(0); });
-                };
-                return (function() { return true; });
-            });
-
-            // A collectionObservable can be used to hold the instance of the collection.
-            this.persons = kb.collectionObservable(new app.Persons(), app.PersonViewModel, { filters: filterFn });
-
-
-            // Fetch the todos and the collectionObservable will update once the models are loaded
-            this.persons.collection().fetch();
-            console.log('list persons', this.persons.collection().fetch());
-
-            self.removePerson = function(person) { self.persons.remove(person) }
-
-        },
+    router = new Backbone.Router();
+    console.log('router', router);
+    router.route('*path', null, function() { _.defer(loadUrlFn('')); });
+    router.route('', null, function() {
+        return loadPage(kb.renderTemplate('list.html', new PersonListViewModel(persons)));
     });
-})();
+    router.route('new', null, function() {
+        var person = new app.Person();
+        person.addNew = true;
+        return loadPage(kb.renderTemplate('detail.html', new PersonViewModel(person, persons)));
+    });
+    router.route('edit/:id', null, function(id) {
+        var person;
+        if (!(person = persons.get(id))) { loadUrl(''); return; }
+        person.addNew = false;
+        return loadPage(kb.renderTemplate('detail.html', new PersonViewModel(person)));
+    });
+};
+
+// start outside of the binding loop
+var personAppStartRouting = function() {
+    if (!Backbone.History.started) {
+        Backbone.history.start({ pushState: true, root: window.location.pathname });
+    }
+};
